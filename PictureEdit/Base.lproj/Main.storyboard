@@ -52,6 +52,9 @@
                                 </constraints>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="Change Filter"/>
+                                <connections>
+                                    <action selector="changeFilter:" destination="BYZ-38-t0r" eventType="touchUpInside" id="7eq-3w-Tok"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gKx-zs-Xby">
                                 <rect key="frame" x="289" y="605" width="74" height="44"/>
@@ -60,6 +63,9 @@
                                 </constraints>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="Save"/>
+                                <connections>
+                                    <action selector="save:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Wsb-q9-Tzb"/>
+                                </connections>
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
@@ -82,6 +88,10 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Wb0-bQ-nus"/>
+                    <connections>
+                        <outlet property="imageView" destination="2bB-9r-V8B" id="JO8-q5-3Zc"/>
+                        <outlet property="intensity" destination="nrI-yW-iVH" id="3rV-9e-hFw"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>

@@ -99,6 +99,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate & UINavi
     }
     
     func setFilter(action: UIAlertAction) {
+        
+        title = action.title
+        
         ///make sure we have a valid image before continuing
         guard currentImage != nil else {return}
         

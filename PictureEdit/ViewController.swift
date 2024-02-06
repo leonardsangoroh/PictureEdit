@@ -52,6 +52,17 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate & UINavi
     }
 
     @IBAction func changeFilter(_ sender: Any) {
+        let ac = UIAlertController(title:"Choose Filter", message: nil, preferredStyle: .actionSheet)
+        ac.addAction(UIAlertAction(title:"CIBumpDistortion", style: .default, handler: setFilter))
+        ac.addAction(UIAlertAction(title:"CIGaussianBlur", style: .default, handler: setFilter))
+        ac.addAction(UIAlertAction(title:"CIPixellate", style: .default, handler: setFilter))
+        ac.addAction(UIAlertAction(title:"CISepiaTone", style: .default, handler: setFilter))
+        ac.addAction(UIAlertAction(title:"CITwirlDistortion", style: .default, handler: setFilter))
+        ac.addAction(UIAlertAction(title:"CIUnsharpMask", style: .default, handler: setFilter))
+        ac.addAction(UIAlertAction(title:"CIVignette", style: .default, handler: setFilter))
+        ac.addAction(UIAlertAction(title:"Cancel", style: .cancel))
+        present(ac, animated: true)
+        
     }
     
     @IBAction func save(_ sender: Any) {
@@ -63,15 +74,38 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate & UINavi
     
     func applyProcessing(){
         ///read output image from current filter
-        guard let image = currentFilter.outputImage else {return}
+        //guard let image = currentFilter.outputImage else {return}
+        
+        let inputKeys = currentFilter.inputKeys
+        
+        if inputKeys.contains(kCIInputIntensityKey) {currentFilter.setValue(intensity.value, forKey: kCIInputIntensityKey)}
+        if inputKeys.contains(kCIInputRadiusKey) {currentFilter.setValue(intensity.value*200, forKey: kCIInputRadiusKey)}
+        if inputKeys.contains(kCIInputScaleKey) {currentFilter.setValue(intensity.value*10, forKey: kCIInputScaleKey)}
+        if inputKeys.contains(kCIInputCenterKey) {currentFilter.setValue(CIVector(x: currentImage.size.width/2, y: currentImage.size.height/2), forKey: kCIInputCenterKey)}
+        
         ///use slider value to set kCIInputIntensityKey
-        currentFilter.setValue(intensity.value, forKey: kCIInputIntensityKey)
+        //currentFilter.setValue(intensity.value, forKey: kCIInputIntensityKey)
         ///creates a new data type called CGIImage from output image of current filter
-        if let cgimg = context.createCGImage(image, from: image.extent) {
+        if let cgimg = context.createCGImage(currentFilter.outputImage!, from: currentFilter.outputImage!.extent) {
             ///create UIImage from CGIImage
             let processedImage = UIImage(cgImage: cgimg)
-            imageView.image = processedImage
+            self.imageView.image = processedImage
         }
+    }
+    
+    func setFilter(action: UIAlertAction) {
+        ///make sure we have a valid image before continuing
+        guard currentImage != nil else {return}
+        
+        ///safely read alert action's title
+        guard let actionTitle = action.title else {return}
+        
+        currentFilter = CIFilter(name: actionTitle)
+        
+        let beginImage = CIImage(image: currentImage)
+        currentFilter.setValue(beginImage, forKey: kCIInputImageKey)
+        
+        applyProcessing()
     }
     
 }

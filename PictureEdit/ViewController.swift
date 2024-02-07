@@ -12,6 +12,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate & UINavi
 
     @IBOutlet var imageView: UIImageView!
     @IBOutlet var intensity: UISlider!
+    @IBOutlet var intensityTwo: UISlider!
     
     var currentImage: UIImage!
     ///CoreImage component that handles rendering
@@ -50,8 +51,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate & UINavi
         currentFilter.setValue(beginImage, forKey: kCIInputImageKey)
         applyProcessing()
     }
-
-    @IBAction func changeFilter(_ sender: Any) {
+    
+    func setFilterr(){
         let ac = UIAlertController(title:"Choose Filter", message: nil, preferredStyle: .actionSheet)
         ac.addAction(UIAlertAction(title:"CIBumpDistortion", style: .default, handler: setFilter))
         ac.addAction(UIAlertAction(title:"CIGaussianBlur", style: .default, handler: setFilter))
@@ -62,8 +63,16 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate & UINavi
         ac.addAction(UIAlertAction(title:"CIVignette", style: .default, handler: setFilter))
         ac.addAction(UIAlertAction(title:"Cancel", style: .cancel))
         present(ac, animated: true)
-        
     }
+
+    @IBAction func changeFilter(_ sender: Any) {
+        setFilterr()
+    }
+    
+    @IBAction func changeFilterTwo(_ sender: Any) {
+        setFilterr()
+    }
+    
     
     @IBAction func save(_ sender: Any) {
         guard let image = imageView.image else {
@@ -73,7 +82,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate & UINavi
         UIImageWriteToSavedPhotosAlbum(image, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
     }
     
-    @IBAction func intensityChanged(_ sender: Any) {
+    @IBAction func intensityChanged(_ sender: UISlider) {
+        applyProcessing()
+    }
+    
+    @IBAction func intensityTwoChanged(_ sender: UISlider) {
         applyProcessing()
     }
     
@@ -86,6 +99,27 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate & UINavi
         if inputKeys.contains(kCIInputIntensityKey) {currentFilter.setValue(intensity.value, forKey: kCIInputIntensityKey)}
         if inputKeys.contains(kCIInputRadiusKey) {currentFilter.setValue(intensity.value*200, forKey: kCIInputRadiusKey)}
         if inputKeys.contains(kCIInputScaleKey) {currentFilter.setValue(intensity.value*10, forKey: kCIInputScaleKey)}
+        if inputKeys.contains(kCIInputCenterKey) {currentFilter.setValue(CIVector(x: currentImage.size.width/2, y: currentImage.size.height/2), forKey: kCIInputCenterKey)}
+        
+        ///use slider value to set kCIInputIntensityKey
+        //currentFilter.setValue(intensity.value, forKey: kCIInputIntensityKey)
+        ///creates a new data type called CGIImage from output image of current filter
+        if let cgimg = context.createCGImage(currentFilter.outputImage!, from: currentFilter.outputImage!.extent) {
+            ///create UIImage from CGIImage
+            let processedImage = UIImage(cgImage: cgimg)
+            self.imageView.image = processedImage
+        }
+    }
+    
+    func applyProcessingTwo(){
+        ///read output image from current filter
+        //guard let image = currentFilter.outputImage else {return}
+        
+        let inputKeys = currentFilter.inputKeys
+        
+        if inputKeys.contains(kCIInputIntensityKey) {currentFilter.setValue(intensityTwo.value, forKey: kCIInputIntensityKey)}
+        if inputKeys.contains(kCIInputRadiusKey) {currentFilter.setValue(intensityTwo.value*200, forKey: kCIInputRadiusKey)}
+        if inputKeys.contains(kCIInputScaleKey) {currentFilter.setValue(intensityTwo.value*10, forKey: kCIInputScaleKey)}
         if inputKeys.contains(kCIInputCenterKey) {currentFilter.setValue(CIVector(x: currentImage.size.width/2, y: currentImage.size.height/2), forKey: kCIInputCenterKey)}
         
         ///use slider value to set kCIInputIntensityKey

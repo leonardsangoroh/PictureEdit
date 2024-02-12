@@ -45,6 +45,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate & UINavi
         dismiss(animated: true)
         
         currentImage = image
+        self.imageView.alpha = 0
         /// CIImage is the Core Image equivalent of UIImage
         /// sent the result into the current Core Image Filter using KCIInputImageKey
         let beginImage = CIImage(image: currentImage)
@@ -91,6 +92,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate & UINavi
     }
     
     func applyProcessing(){
+        
+        UIView.animate(withDuration: 2, delay: 0, options: [], animations: {
+            self.imageView.alpha = 1
+        }, completion: nil)
         ///read output image from current filter
         //guard let image = currentFilter.outputImage else {return}
         
